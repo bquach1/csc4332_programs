@@ -35,13 +35,36 @@ public class BowlerTest
         assertEquals(score3, 0);
     }
 
-    // Fourth Run: wanted to test strikes and spares by creating exceptional cases for character inputs
+    // * Fourth Run: wanted to test strikes and spares by creating exceptional cases for character inputs
 
     @Test
     public void bowlStrike()
     {
         int score4 = Bowler.calcScore("[X] [2 4] [1 1]");
+        int score5 = Bowler.calcScore("[2 2] [X] [4 5]");
+        
         assertEquals(score4, 27);
+        assertEquals(score5, 35);
+    }
+
+    // * Fifth Run: first implementation will generate out of bounds exception if strike is the last frame, needed to change
+    @Test    
+    public void bowlStrikeLastFrame()
+    {
+        int score6 = Bowler.calcScore("[3 4] [8 2] [X]");
+        assertEquals(score6, 30);
+    }
+
+    // * Sixth Run: adding spares
+
+    @Test
+    public void bowlSpareNotLastFrame()
+    {
+        int score7 = Bowler.calcScore("[2 /] [3 4] [5 3]");
+        int score8 = Bowler.calcScore("[3 4] [5 /] [8 2]");
+
+        assertEquals(score7, 31);
+        assertEquals(score8, 38);
     }
 
 }
