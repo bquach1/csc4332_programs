@@ -86,7 +86,7 @@ public class BowlerTest
         assertEquals(score9, 25);
     }
 
-    // * Eight Run: test soup formatting
+    // * Eighth Run: test soup formatting
     @Test
     public void testBowlSoup() throws Exception
     {
@@ -106,6 +106,9 @@ public class BowlerTest
         int score12 = Bowler.calcScore("[1 9] [5 4] [8 /]");
         assertEquals(score12, 27);
     }
+
+    // * Ninth Run: Need to tweak lookahead to detect if multiple string inputs are
+    // present rather than just add next frame if strike is detected (type error)
 
     @Test
     public void testBowlAllStrikes() throws Exception
@@ -143,22 +146,19 @@ public class BowlerTest
         Bowler.calcScore("[/] [/] [/]");
     }
 
+    // * Tenth Run: add exception handling for empty strings, null input,
+    // improper character input, etc.
+
     @Test(expected = IllegalArgumentException.class)
     public void testBowlEmptyStringFrames() throws Exception
     {
         Bowler.calcScore("");
     }
 
-    @Test(expected = Exception.class)
-    public void testBowlOddIntegerFrames() throws Exception
+    @Test(expected = NullPointerException.class)
+    public void testBowlNullString() throws Exception
     {
-        Bowler.calcScore("[1] [2 5] [9 2]");
-    }
-
-    @Test(expected = Exception.class)
-    public void testBowlMultipleOddIntegerFrames() throws Exception
-    {
-        Bowler.calcScore("[1] [2] [9 2]");
+        Bowler.calcScore(null);
     }
     
     @Test(expected = Exception.class)
@@ -173,10 +173,19 @@ public class BowlerTest
         Bowler.calcScore("[2H 5] [3 2] [6 4]");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testBowlNullString() throws Exception
+    // Eleventh Run: thought of previous errors like if one score was recorded for a frame
+    // (i.e. incomplete round), or no score recorded for frame.
+
+    @Test(expected = Exception.class)
+    public void testBowlOddIntegerFrames() throws Exception
     {
-        Bowler.calcScore(null);
+        Bowler.calcScore("[1] [2 5] [9 2]");
+    }
+
+    @Test(expected = Exception.class)
+    public void testBowlMultipleOddIntegerFrames() throws Exception
+    {
+        Bowler.calcScore("[1] [2] [9 2]");
     }
 
     @Test(expected = Exception.class)
@@ -184,6 +193,9 @@ public class BowlerTest
     {
         Bowler.calcScore("[2 4] [] [6 3]");
     }
+
+    // * Twelfth Run: Implemented stacks to see mismatched bracket inputs
+    // or incorrect formatting for separators.
 
     @Test(expected = Exception.class)
     public void testUnclosedFrames() throws Exception

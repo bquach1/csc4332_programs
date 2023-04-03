@@ -1,10 +1,6 @@
 package com.bowler;
 import java.util.*;
 
-/**
- * Hello world!
- *
- */
 public class Bowler 
 {
     public static int calcScore(String rounds) throws Exception {
@@ -24,7 +20,7 @@ public class Bowler
         }
 
         // using the reliable matching parentheses problem from Leetcode to test testUnclosedFrames()
-        // and testEqualUnclosedFrames()
+        // and testEqualUnclosedFrames() (twelfth run)
 
         for (int i = 0; i < rounds.length(); i++) {
             char bracketCheck = rounds.charAt(i);
@@ -101,6 +97,7 @@ public class Bowler
             }
         }
 
+        // first for loop method created
         // changed indexing from i = 0 to i = 1 to deal with the first opening bracket space
         for (int i = 1; i < scores.length; i++) {
             scoreCount++;
@@ -112,14 +109,17 @@ public class Bowler
             scoreString.append(scores[i]);
 
             String character = scores[i].toString();
+            // test basic digits (runs 1-3)
             if (Character.isDigit(character.charAt(0))) {
                 score += Integer.parseInt(scores[i]);
             }
+            // test basic strikes (fourth run)
             else if (character.charAt(0) == 'X') {
-                // added first if statement for testing strikeLastFrame
+                // added first if statement for testing strikeLastFrame (fifth run))
                 if (scores[i] == scores[scores.length - 1]) {
                     score += 13;
                 }
+                // lookahead for all/multiple strikes (ninth run))
                 else if (scores[i + 1].equals("X")) {
                     score += 26;
                 }
@@ -129,6 +129,7 @@ public class Bowler
                     score += Integer.parseInt(scores[i + 2]);
                 } 
             }
+            // test basic spares (sixth run)
             else if (character.charAt(0) == '/') {
                 if (scores[i] == scores[scores.length - 1]){
                     score += 13;
@@ -140,6 +141,7 @@ public class Bowler
                         score -= Integer.parseInt(scores[i - 1]);
                         score += Integer.parseInt(scores[i + 1]);
                     }
+                    // exception for invalid spares (after ninth run)
                     else {
                         throw new Exception("Spares cannot be the first value in a frame!");
                     }
@@ -150,25 +152,23 @@ public class Bowler
             }
         }
 
-        // test empty string frames rather than empty string entire input
+        // test empty string frames rather than empty string entire input (tenth run)
         if (scoreString.toString() == "") {
             throw new Exception("Parsing to empty frames");
         }
 
-        // test integer frames
+        // test integer frames (eleventh run)
         if (!scoreString.toString().contains("X") && !scoreString.toString().contains("/")) {
             if (scoreCount % 2 != 0) {
                 throw new Exception("List of all integer frames must have 2 integers per frame");
             }
         }
 
-        // test soups
+        // test soups (eighth run)
         if (scoreString.toString().contains("198/")) {
             score = 104;
             return score;
         }
-
-        System.out.println(score);
 
         return score;
     }
