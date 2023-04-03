@@ -6,15 +6,23 @@ package com.bowler;
  */
 public class Bowler 
 {
-    public static int calcScore(String rounds) {
+    public static int calcScore(String rounds) throws Exception {
+
         int score = 0;
+        int scoreCount = 0;
         // refactored split to properly identify ] [ and opening/closing brackets
         // Trying to implement tests for spares revealed this parsing was wrong: String[] scores = rounds.split("[\\[\\]/ ]+");
+
+        if (rounds.isEmpty() || rounds == null) {
+            throw new IllegalArgumentException("Rounds are null or empty!");
+        }
+
         String[] scores = rounds.split("[\\[\\] ]+");
         StringBuilder scoreString = new StringBuilder();
 
         // changed indexing from i = 0 to i = 1 to deal with the first opening bracket space
         for (int i = 1; i < scores.length; i++) {
+            scoreCount++;
             System.out.println(scores[i]);
             // added new individual character checks after first 3 tests were run
             // second set of tests will deal with strikes and spares, so must check characters
@@ -49,9 +57,22 @@ public class Bowler
                         score += Integer.parseInt(scores[i + 1]);
                     }
                     else {
-                        System.out.println("The spare cannot be the first value in the frame!");
+                        throw new Exception("Spares cannot be the first value in a frame!");
                     }
                 }
+            }
+            else {
+                throw new Exception("Each frame must consist of integers 1-12, /, or X");
+            }
+        }
+
+        if (scoreString.toString() == "") {
+            throw new Exception("Parsing to empty frames");
+        }
+
+        if (!scoreString.toString().contains("X") && !scoreString.toString().contains("/")) {
+            if (scoreCount % 2 != 0) {
+                throw new Exception("List of all integer frames must have 2 integers per frame");
             }
         }
 
@@ -63,8 +84,8 @@ public class Bowler
         return score;
     }
 
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
-        calcScore("[1 2] [2 /] [5 6]");
+        calcScore("[2 3] [4 5] [8 2");
     }
 }
