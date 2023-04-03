@@ -1,4 +1,5 @@
 package com.bowler;
+import java.util.*;
 
 /**
  * Hello world!
@@ -10,6 +11,9 @@ public class Bowler
 
         int score = 0;
         int scoreCount = 0;
+        Stack<Integer> stack = new Stack<>();
+        // int openBracketCount = 0;
+        // int closeBracketCount = 0;
         // refactored split to properly identify ] [ and opening/closing brackets
         // Trying to implement tests for spares revealed this parsing was wrong: String[] scores = rounds.split("[\\[\\]/ ]+");
 
@@ -17,6 +21,39 @@ public class Bowler
             throw new IllegalArgumentException("Rounds are null or empty!");
         }
 
+        // using the reliable matching parentheses problem from Leetcode
+
+        for (int i = 0; i < rounds.length(); i++) {
+            char bracketCheck = rounds.charAt(i);
+            if (bracketCheck == '[') {
+                stack.push(i);
+            } else if (bracketCheck == ']') {
+                if (stack.isEmpty()) {
+                    throw new Exception("Missing open or close bracket in frames");
+                } else {
+                    stack.pop();
+                }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            throw new Exception("Missing open or close bracket in frames");
+        }
+
+        // for (int i = 0; i < rounds.length(); i++) {
+        //     char bracketCheck = rounds.charAt(i);
+        //     if (bracketCheck == '[') {
+        //         openBracketCount++;
+        //     }
+        //     else if (bracketCheck == ']') {
+        //         closeBracketCount++;
+        //     }
+        // }
+
+        // if (openBracketCount != closeBracketCount) {
+        //     throw new Exception("Missing open or close bracket in frames");
+        // }
+        
         String[] scores = rounds.split("[\\[\\] ]+");
         StringBuilder scoreString = new StringBuilder();
 
@@ -86,6 +123,6 @@ public class Bowler
 
     public static void main( String[] args ) throws Exception
     {
-        calcScore("[2 3] [4 5] [8 2");
+        calcScore("[2 3] [4 5] [8 2]");
     }
 }

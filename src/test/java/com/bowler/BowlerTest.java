@@ -128,9 +128,21 @@ public class BowlerTest
     }
 
     @Test(expected = Exception.class)
+    public void testBowlMultipleOddIntegerFrames() throws Exception
+    {
+        Bowler.calcScore("[1] [2] [9 2]");
+    }
+    
+    @Test(expected = Exception.class)
     public void testBowlInvalidCharacters() throws Exception
     {
         Bowler.calcScore("[2 5] [H 3] [6 4]");
+    }
+
+    @Test(expected = Exception.class)
+    public void testMixedDigitLetterInput() throws Exception
+    {
+        Bowler.calcScore("[2H 5] [3 2] [6 4]");
     }
 
     @Test(expected = NullPointerException.class)
@@ -149,6 +161,31 @@ public class BowlerTest
     public void testUnclosedFrames() throws Exception
     {
         Bowler.calcScore("[2 3] [4 5] [8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testEqualUnclosedFrames() throws Exception
+    {
+        Bowler.calcScore("[2 3] 4 5] [8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testNoBracketFrames() throws Exception
+    {
+        Bowler.calcScore("2 3 4 5 8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testRandomWordInput() throws Exception
+    {
+        Bowler.calcScore("Sweet");
+    }
+
+    @Test
+    public void testRandomSpaceFrames() throws Exception
+    {
+        int score20 = Bowler.calcScore("[       2 3] [4 5] [8 2]");
+        assertEquals(score20, 24);
     }
 
     @Test(expected = Exception.class)
