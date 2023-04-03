@@ -5,6 +5,8 @@ Spring 2023
 Language: Java
 Testing Framework: JUnit
 
+Project is set up with VSCode with Java project Maven setup.
+
 Main Java file can be found in src/main/java/com/bowler/Bowler.java,
 main testing file can be found in src/test/java/com/bowler/BowlerTest.java.
 
