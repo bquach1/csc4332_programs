@@ -77,7 +77,8 @@ public class BowlerTest
         assertEquals(score8, 52);
     }
 
-    // * Seventh Run: just like bowlStrikeLastFrame, first implementation will generate out of bounds exception if strike is the last frame, needed to change
+    // * Seventh Run: just like bowlStrikeLastFrame, first implementation will 
+    // generate out of bounds exception if strike is the last frame, needed to change
     @Test
     public void testBowlSpareLastFrame() throws Exception
     {
@@ -113,7 +114,7 @@ public class BowlerTest
         assertEquals(score13, 65);
     }
 
-    // * at first, I thought it would my implementation would be a problem if the values 1, 9, 8, and / appeared
+    // * at first, I thought my implementation would be a problem if the values 1, 9, 8, and / appeared
     // but not as two separate frames of [1 9] and [8 /]. However, that would result in a frame with value 17,
     // which is not valid as it is greater than 13 pins, and a spare / in an even-indexed location, which
     // is not valid as the spare has to be the last index in the frame. Dealing with those individually would
@@ -122,6 +123,12 @@ public class BowlerTest
     public void testBowlInvalidSpare() throws Exception
     {
         Bowler.calcScore("[/ 1] [5 4] [6 2]");
+    }
+
+    @Test(expected = Exception.class)
+    public void testBowlSoupString() throws Exception
+    {
+        Bowler.calcScore("198/");
     }
 
     @Test(expected = Exception.class)
@@ -173,9 +180,9 @@ public class BowlerTest
     }
 
     @Test(expected = Exception.class)
-    public void testBowlEmptyFrames() throws Exception
+    public void testBowlEmptyFrame() throws Exception
     {
-        Bowler.calcScore("[] [] []");
+        Bowler.calcScore("[2 4] [] [6 3]");
     }
 
     @Test(expected = Exception.class)
@@ -188,6 +195,12 @@ public class BowlerTest
     public void testEqualUnclosedFrames() throws Exception
     {
         Bowler.calcScore("[2 3] 4 5] [8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testUnidentifiedBracketFrames() throws Exception
+    {
+        Bowler.calcScore("{2 3} {4 5} {8 2}");
     }
 
     @Test(expected = Exception.class)
