@@ -37,8 +37,8 @@ public class BowlerTest
     @Test
     public void testBowlTwoDigitFrame() throws Exception
     {
-        int score4 = Bowler.calcScore("[10 2] [4 5] [6 7]");
-        assertEquals(score4, 34);
+        int score4 = Bowler.calcScore("[10 2] [4 5] [6 6]");
+        assertEquals(score4, 33);
     }
 
     // * Fourth Run: wanted to test strikes and spares by creating exceptional cases for character inputs
@@ -69,33 +69,48 @@ public class BowlerTest
         assertEquals(score7, 38);
     }
 
+    @Test
+    public void testBowlAllSpares() throws Exception
+    {
+        int score8 = Bowler.calcScore("[3 /] [5 /] [8 /]");
+
+        assertEquals(score8, 52);
+    }
+
     // * Seventh Run: just like bowlStrikeLastFrame, first implementation will generate out of bounds exception if strike is the last frame, needed to change
     @Test
     public void testBowlSpareLastFrame() throws Exception
     {
-        int score8 = Bowler.calcScore("[1 9] [1 1] [8 /]");
-        assertEquals(score8, 25);
+        int score9 = Bowler.calcScore("[1 9] [1 1] [8 /]");
+        assertEquals(score9, 25);
     }
 
     // * Eight Run: test soup formatting
     @Test
     public void testBowlSoup() throws Exception
     {
-        int score9 = Bowler.calcScore("[3 7] [1 9] [8 /]");
-        assertEquals(score9, 104);
+        int score10 = Bowler.calcScore("[3 7] [1 9] [8 /]");
+        assertEquals(score10, 104);
     }
 
     @Test
     public void testBowlSoupShortCircuit() throws Exception
     {
-        int score10 = Bowler.calcScore("[1 9] [8 /]");
-        assertEquals(score10, 104);
+        int score11 = Bowler.calcScore("[1 9] [8 /]");
+        assertEquals(score11, 104);
     }
 
     public void testBowlNonconsecutiveSoup() throws Exception
     {
-        int score11 = Bowler.calcScore("[1 9] [5 4] [8 /]");
-        assertEquals(score11, 27);
+        int score12 = Bowler.calcScore("[1 9] [5 4] [8 /]");
+        assertEquals(score12, 27);
+    }
+
+    @Test
+    public void testBowlAllStrikes() throws Exception
+    {
+        int score13 = Bowler.calcScore("[X] [X] [X]");
+        assertEquals(score13, 65);
     }
 
     // * at first, I thought it would my implementation would be a problem if the values 1, 9, 8, and / appeared
@@ -113,6 +128,12 @@ public class BowlerTest
     public void testBowlInvalidSpareSingleFrame() throws Exception
     {
         Bowler.calcScore("[6 1] [/] [6 2]");
+    }
+
+    @Test(expected = Exception.class)
+    public void testBowlAllInvalidSpares() throws Exception
+    {
+        Bowler.calcScore("[/] [/] [/]");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -181,11 +202,10 @@ public class BowlerTest
         Bowler.calcScore("Sweet");
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testRandomSpaceFrames() throws Exception
     {
-        int score20 = Bowler.calcScore("[       2 3] [4 5] [8 2]");
-        assertEquals(score20, 24);
+        Bowler.calcScore("[       2 3] [4 5] [8 2]");
     }
 
     @Test(expected = Exception.class)
@@ -198,6 +218,12 @@ public class BowlerTest
     public void testBowlFrameGreaterThan13() throws Exception
     {
         Bowler.calcScore("[9 8] [4 5] [3 2]");
+    }
+
+    @Test(expected = Exception.class) 
+    public void testMoreThanTwoFrameEntries() throws Exception
+    {
+        Bowler.calcScore("[3 6] [2 4] [1 2 3 4]");
     }
 
 }

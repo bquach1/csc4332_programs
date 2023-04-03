@@ -11,7 +11,7 @@ public class Bowler
 
         int score = 0;
         int scoreCount = 0;
-        Stack<Integer> stack = new Stack<>();
+        Stack<Integer> bracketStack = new Stack<>();
         // int openBracketCount = 0;
         // int closeBracketCount = 0;
         // refactored split to properly identify ] [ and opening/closing brackets
@@ -26,17 +26,17 @@ public class Bowler
         for (int i = 0; i < rounds.length(); i++) {
             char bracketCheck = rounds.charAt(i);
             if (bracketCheck == '[') {
-                stack.push(i);
+                bracketStack.push(i);
             } else if (bracketCheck == ']') {
-                if (stack.isEmpty()) {
+                if (bracketStack.isEmpty()) {
                     throw new Exception("Missing open or close bracket in frames");
                 } else {
-                    stack.pop();
+                    bracketStack.pop();
                 }
             }
         }
 
-        if (!stack.isEmpty()) {
+        if (!bracketStack.isEmpty()) {
             throw new Exception("Missing open or close bracket in frames");
         }
 
@@ -53,14 +53,46 @@ public class Bowler
         // if (openBracketCount != closeBracketCount) {
         //     throw new Exception("Missing open or close bracket in frames");
         // }
-        
+
+        String[] formattedFrames = rounds.split("\\s+(?=\\[)");
         String[] scores = rounds.split("[\\[\\] ]+");
         StringBuilder scoreString = new StringBuilder();
+        
+        // added individual frame split to check if sum is greater than 12
+        for (int i = 0; i < formattedFrames.length; i++) {
+            for (int j = 0; j < formattedFrames[i].length(); j++) {
+                String[] values = formattedFrames[i].replaceAll("[\\[\\]]", "").split(" ");
+                int sum = 0;
+
+                if (values.length > 2) {
+                    throw new Exception("Frames cannot have more than 2 entries");
+                }
+
+                if (rounds.contains("X") || rounds.contains("/")) {
+                    if (values.length > 1) {
+                        if (values[1].equals("X")) {
+                            throw new Exception("Strike cannot be after the first element in a frame");
+                        }
+                    }
+                    else {
+                        continue;
+                    }
+                }         
+                else {
+                    sum += Integer.parseInt(values[0]);
+                    sum += Integer.parseInt(values[1]);
+                }       
+
+                if (sum >= 13) {
+                    throw new Exception("Frame sum must not exceed 13 and should be a spare if == 13");
+                }
+            }
+        }
 
         // changed indexing from i = 0 to i = 1 to deal with the first opening bracket space
         for (int i = 1; i < scores.length; i++) {
             scoreCount++;
-            System.out.println(scores[i]);
+
             // added new individual character checks after first 3 tests were run
             // second set of tests will deal with strikes and spares, so must check characters
 
@@ -75,6 +107,9 @@ public class Bowler
                 // added first if statement for testing strikeLastFrame
                 if (scores[i] == scores[scores.length - 1]) {
                     score += 13;
+                }
+                else if (scores[i + 1].equals("X")) {
+                    score += 26;
                 }
                 else {
                     score += 13;
@@ -118,11 +153,13 @@ public class Bowler
             return score;
         }
 
+        System.out.println(score);
+
         return score;
     }
 
     public static void main( String[] args ) throws Exception
     {
-        calcScore("[2 3] [4 5] [8 2]");
+        calcScore("[X] [2 4] [X]");
     }
 }
