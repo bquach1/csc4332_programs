@@ -37,8 +37,8 @@ public class BowlerTest
     @Test
     public void testBowlTwoDigitFrame() throws Exception
     {
-        int score4 = Bowler.calcScore("[10 2] [4 5] [6 7]");
-        assertEquals(score4, 34);
+        int score4 = Bowler.calcScore("[10 2] [4 5] [6 6]");
+        assertEquals(score4, 33);
     }
 
     // * Fourth Run: wanted to test strikes and spares by creating exceptional cases for character inputs
@@ -69,36 +69,55 @@ public class BowlerTest
         assertEquals(score7, 38);
     }
 
-    // * Seventh Run: just like bowlStrikeLastFrame, first implementation will generate out of bounds exception if strike is the last frame, needed to change
+    @Test
+    public void testBowlAllSpares() throws Exception
+    {
+        int score8 = Bowler.calcScore("[3 /] [5 /] [8 /]");
+
+        assertEquals(score8, 52);
+    }
+
+    // * Seventh Run: just like bowlStrikeLastFrame, first implementation will 
+    // generate out of bounds exception if strike is the last frame, needed to change
     @Test
     public void testBowlSpareLastFrame() throws Exception
     {
-        int score8 = Bowler.calcScore("[1 9] [1 1] [8 /]");
-        assertEquals(score8, 25);
+        int score9 = Bowler.calcScore("[1 9] [1 1] [8 /]");
+        assertEquals(score9, 25);
     }
 
-    // * Eight Run: test soup formatting
+    // * Eighth Run: test soup formatting
     @Test
     public void testBowlSoup() throws Exception
     {
-        int score9 = Bowler.calcScore("[3 7] [1 9] [8 /]");
-        assertEquals(score9, 104);
+        int score10 = Bowler.calcScore("[3 7] [1 9] [8 /]");
+        assertEquals(score10, 104);
     }
 
     @Test
     public void testBowlSoupShortCircuit() throws Exception
     {
-        int score10 = Bowler.calcScore("[1 9] [8 /]");
-        assertEquals(score10, 104);
+        int score11 = Bowler.calcScore("[1 9] [8 /]");
+        assertEquals(score11, 104);
     }
 
     public void testBowlNonconsecutiveSoup() throws Exception
     {
-        int score11 = Bowler.calcScore("[1 9] [5 4] [8 /]");
-        assertEquals(score11, 27);
+        int score12 = Bowler.calcScore("[1 9] [5 4] [8 /]");
+        assertEquals(score12, 27);
     }
 
-    // * at first, I thought it would my implementation would be a problem if the values 1, 9, 8, and / appeared
+    // * Ninth Run: Need to tweak lookahead to detect if multiple string inputs are
+    // present rather than just add next frame if strike is detected (type error)
+
+    @Test
+    public void testBowlAllStrikes() throws Exception
+    {
+        int score13 = Bowler.calcScore("[X] [X] [X]");
+        assertEquals(score13, 65);
+    }
+
+    // * at first, I thought my implementation would be a problem if the values 1, 9, 8, and / appeared
     // but not as two separate frames of [1 9] and [8 /]. However, that would result in a frame with value 17,
     // which is not valid as it is greater than 13 pins, and a spare / in an even-indexed location, which
     // is not valid as the spare has to be the last index in the frame. Dealing with those individually would
@@ -110,16 +129,52 @@ public class BowlerTest
     }
 
     @Test(expected = Exception.class)
+    public void testBowlSoupString() throws Exception
+    {
+        Bowler.calcScore("198/");
+    }
+
+    @Test(expected = Exception.class)
     public void testBowlInvalidSpareSingleFrame() throws Exception
     {
         Bowler.calcScore("[6 1] [/] [6 2]");
     }
+
+    @Test(expected = Exception.class)
+    public void testBowlAllInvalidSpares() throws Exception
+    {
+        Bowler.calcScore("[/] [/] [/]");
+    }
+
+    // * Tenth Run: add exception handling for empty strings, null input,
+    // improper character input, etc.
 
     @Test(expected = IllegalArgumentException.class)
     public void testBowlEmptyStringFrames() throws Exception
     {
         Bowler.calcScore("");
     }
+
+    @Test(expected = NullPointerException.class)
+    public void testBowlNullString() throws Exception
+    {
+        Bowler.calcScore(null);
+    }
+    
+    @Test(expected = Exception.class)
+    public void testBowlInvalidCharacters() throws Exception
+    {
+        Bowler.calcScore("[2 5] [H 3] [6 4]");
+    }
+
+    @Test(expected = Exception.class)
+    public void testMixedDigitLetterInput() throws Exception
+    {
+        Bowler.calcScore("[2H 5] [3 2] [6 4]");
+    }
+
+    // Eleventh Run: thought of previous errors like if one score was recorded for a frame
+    // (i.e. incomplete round), or no score recorded for frame.
 
     @Test(expected = Exception.class)
     public void testBowlOddIntegerFrames() throws Exception
@@ -128,27 +183,54 @@ public class BowlerTest
     }
 
     @Test(expected = Exception.class)
-    public void testBowlInvalidCharacters() throws Exception
+    public void testBowlMultipleOddIntegerFrames() throws Exception
     {
-        Bowler.calcScore("[2 5] [H 3] [6 4]");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testBowlNullString() throws Exception
-    {
-        Bowler.calcScore(null);
+        Bowler.calcScore("[1] [2] [9 2]");
     }
 
     @Test(expected = Exception.class)
-    public void testBowlEmptyFrames() throws Exception
+    public void testBowlEmptyFrame() throws Exception
     {
-        Bowler.calcScore("[] [] []");
+        Bowler.calcScore("[2 4] [] [6 3]");
     }
+
+    // * Twelfth Run: Implemented stacks to see mismatched bracket inputs
+    // or incorrect formatting for separators.
 
     @Test(expected = Exception.class)
     public void testUnclosedFrames() throws Exception
     {
         Bowler.calcScore("[2 3] [4 5] [8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testEqualUnclosedFrames() throws Exception
+    {
+        Bowler.calcScore("[2 3] 4 5] [8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testUnidentifiedBracketFrames() throws Exception
+    {
+        Bowler.calcScore("{2 3} {4 5} {8 2}");
+    }
+
+    @Test(expected = Exception.class)
+    public void testNoBracketFrames() throws Exception
+    {
+        Bowler.calcScore("2 3 4 5 8 2");
+    }
+
+    @Test(expected = Exception.class)
+    public void testRandomWordInput() throws Exception
+    {
+        Bowler.calcScore("Sweet");
+    }
+
+    @Test(expected = Exception.class)
+    public void testRandomSpaceFrames() throws Exception
+    {
+        Bowler.calcScore("[       2 3] [4 5] [8 2]");
     }
 
     @Test(expected = Exception.class)
@@ -161,6 +243,12 @@ public class BowlerTest
     public void testBowlFrameGreaterThan13() throws Exception
     {
         Bowler.calcScore("[9 8] [4 5] [3 2]");
+    }
+
+    @Test(expected = Exception.class) 
+    public void testMoreThanTwoFrameEntries() throws Exception
+    {
+        Bowler.calcScore("[3 6] [2 4] [1 2 3 4]");
     }
 
 }
